@@ -8,9 +8,9 @@ randSeed          17
 rNebrShell        0.6
 stepAvg           100
 stepEquil         0
-stepLimit         100
+stepLimit         1000
 configChoice      0
-stepSnapConfig	  1000000
+stepSnapConfig	  1000
 Cfgcapture	  10000
 stepInitlzTemp    10
 ALPHA             1.6
