@@ -19,7 +19,7 @@ topo readlammpsdata protein.data bond
 mol new trajectory.lammpstrj autobonds 0
 ```
 
-Video: https://youtu.be/dIvpGad2Ugw
+[Video on YouTube](https://youtu.be/dIvpGad2Ugw)
 
 ## To run the legacy solver
 
