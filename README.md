@@ -25,7 +25,7 @@ mol new trajectory.lammpstrj autobonds 0
 
 ```
 cd <working_copy>/legacy
-mpirun -np 8 ./Art_md
+mpirun -np 8 ./md_rbc
 ```
 
 The result files in Cfg/ can also be viewed with VMD.
