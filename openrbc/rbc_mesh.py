@@ -7,10 +7,11 @@ from time import time
 import sys
 from getopt import getopt
 
-opts, args = getopt( sys.argv[1:], 's:v:a:' )
+opts, args = getopt( sys.argv[1:], 's:v:a:e:' )
 opts       = dict( opts )
 n_step     = int(opts['-s']) if '-s' in opts else 100
-n_vert     = int(opts['-v']) if '-v' in opts else 2000
+n_vert     = int(opts['-v']) if '-v' in opts else 500
+seed       = int(opts['-e']) if '-e' in opts else 0
 arx        = opts['-a'] if '-a' in opts else 'v%ds%d' % ( n_vert, n_step ) 
 k          = 0.004 * n_vert ** (1/3.0);
 eps        = 1e-7
@@ -18,8 +19,10 @@ cut        = 4 / n_vert ** 0.5
 
 print 'Generating particles by Poisson disk'
 t0    = time()
-vert  = random.randn( 1, 3 );
+random.seed( seed )
+vert  = random.randn( 1, 3 )
 vert /= linalg.norm(vert)
+cache = vert.copy()
 for i in range( 0, n_vert - 1 ):
     if i % floor( n_vert / 10 ) == 0:
         sys.stdout.write( '%d...' % i )
@@ -70,10 +73,14 @@ for step in range(n_step):
     alpha  = 0.1
     centri = vert * tile( alpha / dist - alpha, ( 3, 1 ) ).transpose()
     vert   = vert + centri
-sys.stdout.write('Done\n')
 
+# Post-processing: project to unit sphere
+vert /= linalg.norm( vert, axis = 1 )[ :, newaxis ]
+
+sys.stdout.write('Done\n')
 print '%d vertices, %d iterations => %.2f seconds' % ( n_vert, n_step, time() - t0 )
-    
+
 savetxt( '%s.vert.txt' % arx, vert, fmt='% 2.8e', delimiter=' ' )
 savetxt( '%s.face.txt' % arx, face, fmt='%-7d', delimiter=' ' )
 savetxt( '%s.bond.txt' % arx, bond, fmt='%-7d', delimiter=' ' )
+
