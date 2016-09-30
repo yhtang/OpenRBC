@@ -29,3 +29,15 @@ mpirun -np 8 ./md_rbc
 ```
 
 The result files in Cfg/ can also be viewed with VMD.
+
+## To compile from source
+
+```
+cd <working_copy>/src
+make
+```
+Optional parameters for make
+* `ARCH=[power8|x86]` compilation target architecture
+* `CXX=[g++|xlC_r|icpc]` compiler
+* `DEBUG=[0|1]` whether to turn on 'optimization for debug'
+* `AALLOC=[0|1]` fall-back option for older linux kernels that do not provide the `std::aligned_alloc` API.
