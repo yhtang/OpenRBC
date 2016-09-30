@@ -1,6 +1,6 @@
 # OpenRBC - A Fast Simulator of Red Blood Cells at Protein-Resolution
 
-This repository contains the binary for performance evaluation of the OpenPOWER Challenge Hackathon project 'OpenRBC'.
+This repository contains the source code and binary for performance evaluation of the OpenPOWER Challenge Hackathon project 'OpenRBC'.
 
 ## To run the OpenRBC demo on SuperVessel
 
