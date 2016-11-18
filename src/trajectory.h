@@ -11,8 +11,8 @@
 !@ See the License for the specific language governing permissions and
 !@ limitations under the License.
 ******************************************************************************/
-#ifndef TRAJECTORY_H_
-#define TRAJECTORY_H_
+#ifndef OPENRBC_TRAJECTORY_H_
+#define OPENRBC_TRAJECTORY_H_
 
 #include "container.h"
 #include "forcefield.h"

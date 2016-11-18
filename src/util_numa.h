@@ -11,8 +11,8 @@
 !@ See the License for the specific language governing permissions and
 !@ limitations under the License.
 ******************************************************************************/
-#ifndef UTIL_NUMA_H_
-#define UTIL_NUMA_H_
+#ifndef OPENRBC_UTIL_NUMA_H_
+#define OPENRBC_UTIL_NUMA_H_
 
 #include <map>
 #include <vector>
@@ -72,6 +72,7 @@ struct LoadBalancer {
             int actual_size = std::min( n_ - block_beg_, block_size_ );
             i   = block_beg_ + actual_size * tid_ / ntd_;
             end = ( tid_ == ntd_ - 1 ) ? ( block_beg_ + actual_size ) : ( block_beg_ + actual_size * ( tid_ + 1 ) / ntd_ );
+            if ( i == end ) exhausted = true;
         }
     };
 
@@ -87,6 +88,50 @@ protected:
 };
 
 using BalancerMap = std::map<std::string, LoadBalancer>;
+
+struct Ranger {
+	Ranger( std::size_t size ) : size_(size) {}
+
+	std::size_t size_;
+
+	struct iterator {
+		const std::size_t n_, block_size_;
+		const int tid_, ntd_;
+		std::size_t block_beg_;
+		int i, end;
+		bool exhausted = false;
+		iterator( std::size_t range, std::size_t block_size, int tid, int ntd ) : n_( range ), block_size_( block_size ), tid_( tid ), ntd_( ntd ), block_beg_( 0 ) {
+			if ( block_beg_ < range ) compute_block_range();
+			else exhausted = true;
+		}
+		void operator ++ () {
+			if ( ++i >= end ) {
+				block_beg_ += block_size_;
+				if ( block_beg_ < n_ ) compute_block_range();
+				else exhausted = true;
+			}
+		}
+		int  operator * () const { return i; }
+		friend inline bool operator != (iterator const &l, iterator const &r) {
+			return l.exhausted != r.exhausted;
+		}
+	protected:
+		void compute_block_range() {
+			int actual_size = std::min( n_ - block_beg_, block_size_ );
+			i   = block_beg_ + actual_size * tid_ / ntd_;
+			end = ( tid_ == ntd_ - 1 ) ? ( block_beg_ + actual_size ) : ( block_beg_ + actual_size * ( tid_ + 1 ) / ntd_ );
+			if ( i == end ) exhausted = true;
+		}
+	};
+
+	inline iterator begin( std::size_t share = 2048 ) const {
+		return iterator { size_, share * omp_get_max_threads(), omp_get_thread_num(), omp_get_max_threads() };
+	}
+
+	inline iterator end() const {
+		return iterator {0, 0, 0, 0};
+	}
+};
 
 }
 

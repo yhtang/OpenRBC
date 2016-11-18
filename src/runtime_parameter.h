@@ -11,8 +11,8 @@
 !@ See the License for the specific language governing permissions and
 !@ limitations under the License.
 ******************************************************************************/
-#ifndef CONFIG_RT_H_
-#define CONFIG_RT_H_
+#ifndef OPENRBC_CONFIG_RT_H_
+#define OPENRBC_CONFIG_RT_H_
 
 #include <algorithm>
 #include <iomanip>
@@ -33,6 +33,8 @@ const static unsigned int force    = 16;
 };
 
 struct RTParameter {
+	using real = config::real;
+
     // system configuration
     double box[3][2];
     double bsize[3];
@@ -130,4 +132,4 @@ struct RTParameter {
 
 }
 
-#endif /* PARAMETERS_H_ */
+#endif

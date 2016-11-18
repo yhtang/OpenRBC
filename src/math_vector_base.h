@@ -11,8 +11,8 @@
 !@ See the License for the specific language governing permissions and
 !@ limitations under the License.
 ******************************************************************************/
-#ifndef MATH_VECTOR_BASE_H_
-#define MATH_VECTOR_BASE_H_
+#ifndef OPENRBC_MATH_VECTOR_BASE_H_
+#define OPENRBC_MATH_VECTOR_BASE_H_
 
 #include <array>
 #include <cmath>

@@ -11,8 +11,8 @@
 !@ See the License for the specific language governing permissions and
 !@ limitations under the License.
 ******************************************************************************/
-#ifndef STRAY_CLEANUP_H_
-#define STRAY_CLEANUP_H_
+#ifndef OPENRBC_STRAY_CLEANUP_H_
+#define OPENRBC_STRAY_CLEANUP_H_
 
 #include "aligned_array.h"
 #include "container.h"

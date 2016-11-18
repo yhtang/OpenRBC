@@ -11,8 +11,8 @@
 !@ See the License for the specific language governing permissions and
 !@ limitations under the License.
 ******************************************************************************/
-#ifndef REORDER_MORTON_H_
-#define REORDER_MORTON_H_
+#ifndef OPENRBC_REORDER_MORTON_H_
+#define OPENRBC_REORDER_MORTON_H_
 
 #include <algorithm>
 #include <vector>

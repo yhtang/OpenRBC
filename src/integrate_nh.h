@@ -11,8 +11,8 @@
 !@ See the License for the specific language governing permissions and
 !@ limitations under the License.
 ******************************************************************************/
-#ifndef INTEGRATE_NH_H_
-#define INTEGRATE_NH_H_
+#ifndef OPENRBC_INTEGRATE_NH_H_
+#define OPENRBC_INTEGRATE_NH_H_
 
 #include <cmath>
 #include <iostream>

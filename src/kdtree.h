@@ -11,8 +11,8 @@
 !@ See the License for the specific language governing permissions and
 !@ limitations under the License.
 ******************************************************************************/
-#ifndef KDTREE_H_
-#define KDTREE_H_
+#ifndef OPENRBC_KDTREE_H_
+#define OPENRBC_KDTREE_H_
 
 #include "math_vector.h"
 #include "service.h"

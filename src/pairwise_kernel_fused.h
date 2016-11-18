@@ -11,8 +11,8 @@
 !@ See the License for the specific language governing permissions and
 !@ limitations under the License.
 ******************************************************************************/
-#ifndef FORCE_KERNEL_FUSED_H_
-#define FORCE_KERNEL_FUSED_H_
+#ifndef OPENRBC_FORCE_KERNEL_FUSED_H_
+#define OPENRBC_FORCE_KERNEL_FUSED_H_
 
 #include "math_vector.h"
 #include "pairwise_kernel.h"
@@ -98,4 +98,4 @@ inline void protein_protein_omp(
 
 }
 
-#endif /* FORCE_KERNEL_H_ */
+#endif

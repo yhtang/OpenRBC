@@ -11,8 +11,8 @@
 !@ See the License for the specific language governing permissions and
 !@ limitations under the License.
 ******************************************************************************/
-#ifndef DISPLAY_H_
-#define DISPLAY_H_
+#ifndef OPENRBC_DISPLAY_H_
+#define OPENRBC_DISPLAY_H_
 
 #include <iostream>
 #include <iomanip>
@@ -71,4 +71,4 @@ inline void display_timing( std::ostream & out, double reading, const char msg[]
 
 }
 
-#endif /* DISPLAY_H_ */
+#endif

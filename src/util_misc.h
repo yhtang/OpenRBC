@@ -11,8 +11,8 @@
 !@ See the License for the specific language governing permissions and
 !@ limitations under the License.
 ******************************************************************************/
-#ifndef UTIL_MISC_H_
-#define UTIL_MISC_H_
+#ifndef OPENRBC_UTIL_MISC_H_
+#define OPENRBC_UTIL_MISC_H_
 
 #include<cstring>
 #include<string>

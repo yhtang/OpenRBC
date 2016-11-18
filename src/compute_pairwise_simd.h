@@ -11,8 +11,8 @@
 !@ See the License for the specific language governing permissions and
 !@ limitations under the License.
 ******************************************************************************/
-#ifndef PAIRWISE_SIMD_H
-#define PAIRWISE_SIMD_H
+#ifndef OPENRBC_PAIRWISE_SIMD_H
+#define OPENRBC_PAIRWISE_SIMD_H
 
 #include <cmath>
 #include <iostream>
@@ -271,4 +271,4 @@ void compute_pairwise_simd( VoronoiDiagram const & voronoi,
 
 }
 
-#endif /* PAIRWISE_FUSED_H */
+#endif

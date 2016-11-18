@@ -11,8 +11,8 @@
 !@ See the License for the specific language governing permissions and
 !@ limitations under the License.
 ******************************************************************************/
-#ifndef VORONOI_H_
-#define VORONOI_H_
+#ifndef OPENRBC_VORONOI_H_
+#define OPENRBC_VORONOI_H_
 
 #include "aligned_array.h"
 #include "container.h"
@@ -67,7 +67,7 @@ struct VoronoiDiagram {
             tree.build( centroids );
             cell_list.partition( cont, *this );
             update_centroid( cont, cell_list, [&cell_list]( int i ) {return cell_list.cells[i];} );
-            if ( ( k & ( ~k + 1 ) ) == k ) reorder( cont, param, cell_list ); // magic: k is-power-of-2
+            if ( ( k & ( ~k + 1 ) ) == k ) reorder( cont, param, cell_list ); // magic: check if k is power-of-2
         }
         Service<Timers>::call()["VoronoiDiagram::init"].stop();
 
@@ -198,8 +198,7 @@ struct VCellList {
             int last_nearest = 0;
             real r;
 
-            for ( auto itr = Service<BalancerMap>::call()[ cont.id() ].range(); !itr.exhausted ; ++itr ) {
-                auto i = *itr;
+            for( auto i: Ranger( cont.size() ) ) {
                 vector<real, 3> pt { cont.x[i][0], cont.x[i][1], cont.x[i][2] };
                 int  guess_i = last_nearest;
                 real guess_r = norm( pt - voronoi.centroids[last_nearest] );

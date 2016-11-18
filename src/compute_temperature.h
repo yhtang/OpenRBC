@@ -11,8 +11,8 @@
 !@ See the License for the specific language governing permissions and
 !@ limitations under the License.
 ******************************************************************************/
-#ifndef COMPUTE_TEMPERATURE_H_
-#define COMPUTE_TEMPERATURE_H_
+#ifndef OPENRBC_COMPUTE_TEMPERATURE_H_
+#define OPENRBC_COMPUTE_TEMPERATURE_H_
 
 #include "container.h"
 #include "forcefield.h"
@@ -30,4 +30,4 @@ double compute_temperature( CONTAINER1 const & model1, CONTAINER2 const & model2
 
 }
 
-#endif /* COMPUTE_TEMPERATURE_H_ */
+#endif

@@ -11,8 +11,8 @@
 !@ See the License for the specific language governing permissions and
 !@ limitations under the License.
 ******************************************************************************/
-#ifndef FORCE_KERNEL_SIMD_H_
-#define FORCE_KERNEL_SIMD_H_
+#ifndef OPENRBC_FORCE_KERNEL_SIMD_H_
+#define OPENRBC_FORCE_KERNEL_SIMD_H_
 
 #include "math_vector.h"
 #include "math_vector.h"
@@ -115,6 +115,7 @@ inline void lennard_jones_omp(
     const vect r2inv = rinv * rinv;
     const vect r6inv = r2inv * r2inv * r2inv;
     const vect forcelj = r6inv * ( vect( ForceField::lj_lj1[type] ) * r6inv - vect( ForceField::lj_lj2[type] ) );
+    //const vect forcelj_truncated = _min( forcelj, 5.0f );
     const vect fpair = forcelj * r2inv;
 
     const vect f = dx * fpair;
@@ -147,4 +148,4 @@ inline void protein_protein_omp(
 
 }
 
-#endif /* FORCE_KERNEL_H_ */
+#endif

@@ -11,8 +11,8 @@
 !@ See the License for the specific language governing permissions and
 !@ limitations under the License.
 ******************************************************************************/
-#ifndef ALIGNED_ARRAY
-#define ALIGNED_ARRAY
+#ifndef OPENRBC_ALIGNED_ARRAY
+#define OPENRBC_ALIGNED_ARRAY
 
 #include "util_numa.h"
 #include "util_misc.h"
@@ -113,4 +113,4 @@ protected:
 
 }
 
-#endif /* ALIGNED_ARRAY_H_ */
+#endif

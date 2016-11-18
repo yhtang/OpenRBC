@@ -11,8 +11,8 @@
 !@ See the License for the specific language governing permissions and
 !@ limitations under the License.
 ******************************************************************************/
-#ifndef REORDER_H_
-#define REORDER_H_
+#ifndef OPENRBC_REORDER_H_
+#define OPENRBC_REORDER_H_
 
 #include "container.h"
 #include "forcefield.h"
@@ -61,6 +61,8 @@ inline void reorder_bond( ProteContainer & model, C & cell_list ) {
         model.bonds.shadow( local_index[i] + cell_start[values[i]] ) = model.bonds[i];
 
     model.bonds.swap();
+
+    Service<BalancerMap>::call()[ model.id() + "-bonds" ].set_range( model.bonds.size() );
 
     Service<Timers>::call()["|reorder_bond"].stop();
 }
@@ -148,4 +150,4 @@ inline void reorder( LipidContainer & model, RTParameter const & param, const C 
 
 }
 
-#endif /* REORDER_H_ */
+#endif

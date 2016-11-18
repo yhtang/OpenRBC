@@ -11,8 +11,8 @@
 !@ See the License for the specific language governing permissions and
 !@ limitations under the License.
 ******************************************************************************/
-#ifndef FORCE_KERNEL_H_
-#define FORCE_KERNEL_H_
+#ifndef OPENRBC_PAIRWISE_KERNEL_H_
+#define OPENRBC_PAIRWISE_KERNEL_H_
 
 #include "math_vector.h"
 #include "math_vector.h"
@@ -308,4 +308,4 @@ inline void protein_protein_serial(
 
 }
 
-#endif /* FORCE_KERNEL_H_ */
+#endif

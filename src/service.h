@@ -11,8 +11,8 @@
 !@ See the License for the specific language governing permissions and
 !@ limitations under the License.
 ******************************************************************************/
-#ifndef SERVICE_H_
-#define SERVICE_H_
+#ifndef OPENRBC_SERVICE_H_
+#define OPENRBC_SERVICE_H_
 
 namespace openrbc {
 
@@ -27,4 +27,4 @@ template<typename T, int ID> struct Variable { T value = 0; };
 
 }
 
-#endif /* SERVICE_H_ */
+#endif

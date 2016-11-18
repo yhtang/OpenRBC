@@ -11,8 +11,8 @@
 !@ See the License for the specific language governing permissions and
 !@ limitations under the License.
 ******************************************************************************/
-#ifndef PAIRWISE_LL_H
-#define PAIRWISE_LL_H
+#ifndef OPENRBC_PAIRWISE_LL_H
+#define OPENRBC_PAIRWISE_LL_H
 
 #include <cmath>
 #include <iostream>
@@ -235,4 +235,4 @@ void compute_pairwise( Container & c, RTParameter const & param, const Voronoi<T
 
 }
 
-#endif /* PAIRWISE_LL_H */
+#endif

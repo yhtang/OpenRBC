@@ -15,7 +15,6 @@
 #include "compute_pairwise.h"
 #include "compute_pairwise_simd.h"
 #include "compute_pairwise_fused.h"
-#include "compute_pairwise_lp.h"
 #include "compute_temperature.h"
 #include "config_static.h"
 #include "cleanup.h"
@@ -52,7 +51,7 @@ int main( int argc, char ** argv ) {
     //save_topology( lipid, param, std::ofstream( param.file_topo ) );
     #else // full-package RBC
     #if 1
-    init_rbc( lipid, protein, param, 200 );
+    init_rbc( lipid, protein, param, 500 );
     save_topology( std::ofstream( param.file_topo ), param, protein, lipid );
     #else
     init_debug( protein, lipid, param, 50 );

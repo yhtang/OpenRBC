@@ -11,8 +11,8 @@
 !@ See the License for the specific language governing permissions and
 !@ limitations under the License.
 ******************************************************************************/
-#ifndef CONFIG_STATIC_H_
-#define CONFIG_STATIC_H_
+#ifndef OPENRBC_CONFIG_STATIC_H_
+#define OPENRBC_CONFIG_STATIC_H_
 
 #include "math_vector.h"
 

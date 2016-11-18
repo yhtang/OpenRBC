@@ -11,8 +11,8 @@
 !@ See the License for the specific language governing permissions and
 !@ limitations under the License.
 ******************************************************************************/
-#ifndef INIT_FILE_H_
-#define INIT_FILE_H_
+#ifndef OPENRBC_INIT_FILE_H_
+#define OPENRBC_INIT_FILE_H_
 
 #include <fstream>
 #include <iostream>
@@ -80,4 +80,4 @@ void init_file_bond( Container & model, RTParameter const & param, const char * 
 
 }
 
-#endif /* INIT_FILE_H_ */
+#endif

@@ -5,9 +5,9 @@ ARCH    ?= x86
 
 ifeq ($(CXX),g++)
 	ifeq ($(ARCH),x86)
-		CFLAGS  = -std=c++11 -g -O4 -march=native -mtune=native -ffast-math -flax-vector-conversions -fopenmp
+		CFLAGS  = -std=c++11 -g -O4 -march=native -mtune=native -mrecip -ffast-math -flax-vector-conversions -fopenmp
 	else ifeq ($(ARCH),power8)
-		CFLAGS	= -std=c++11 -g -O4 -mcpu=power8 -ffast-math -fopenmp
+		CFLAGS	= -std=c++11 -g -O4 -mcpu=power8 -mrecip -ffast-math -fopenmp
 	endif
 endif
 
@@ -20,7 +20,7 @@ ifeq ($(CXX),xlC_r)
 endif
 
 ifeq ($(DEBUG),1) 
-CFLAGS	+= -Og
+CFLAGS	+= -O0
 endif
 
 ifeq ($(VECINFO),1)

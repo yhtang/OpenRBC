@@ -11,8 +11,8 @@
 !@ See the License for the specific language governing permissions and
 !@ limitations under the License.
 ******************************************************************************/
-#ifndef INIT_RBC_H_
-#define INIT_RBC_H_
+#ifndef OPENRBC_INIT_RBC_H_
+#define OPENRBC_INIT_RBC_H_
 
 #include <cstdlib>
 #include <fstream>
@@ -195,62 +195,36 @@ double init_rbc( C1 & lipid, C2 & protein, RTParameter const & param, const int 
 
     printf( "Generating spectrin network\n" );
     base = protein.size();
-    protein.resize( protein.size() + bond.size() * 19 );
+    const static int spc_res = ForceField::spectrin_resolution;
+    protein.resize( protein.size() + bond.size() * spc_res );
     for ( std::size_t i = 0; i < bond.size(); i++ ) {
-        #if 1
         auto beg = vert[bond[i][0]] - layer_dist * normal_vert[bond[i][0]];
         auto end = vert[bond[i][1]] - layer_dist * normal_vert[bond[i][1]];
         double span = norm( beg - end );
-        auto inc = 0.05 * ( end - beg );
+        auto inc = 1.f / ( spc_res + 1 ) * ( end - beg );
         beg += inc / norm( inc ) * 1.0;
         end -= inc / norm( inc ) * 1.0;
         span = norm( beg - end );
-        inc = 0.05 * ( end - beg );
-        for ( int j = 0; j < 19; j++ ) {
+        inc = 1.f / ( spc_res + 1 ) * ( end - beg );
+        for ( int j = 0; j < spc_res; j++ ) {
             auto x = beg + inc * ( j + 1 );
             victor noise( param.rng.u11(), param.rng.u11(), param.rng.u11() );
-            protein.x   [base + i * 19 + j][0] = x[0] + 0.05 * noise[0];
-            protein.x   [base + i * 19 + j][1] = x[1] + 0.05 * noise[1];
-            protein.x   [base + i * 19 + j][2] = x[2] + 0.05 * noise[2];
-            protein.n   [base + i * 19 + j][0] = x[0];
-            protein.n   [base + i * 19 + j][1] = x[1];
-            protein.n   [base + i * 19 + j][2] = x[2];
-            protein.v   [base + i * 19 + j] = 0;
-            protein.o   [base + i * 19 + j] = 0;
-            protein.type[base + i * 19 + j] = 5;
-            protein.tag [base + i * 19 + j] = base + i * 19 + j + 1;
-            if ( j > 0 ) protein.bonds.emplace_back( 3, protein.tag[base + i * 19 + j - 1], protein.tag[base + i * 19 + j] );
+            protein.x   [base + i * spc_res + j][0] = x[0] + 0.05 * noise[0];
+            protein.x   [base + i * spc_res + j][1] = x[1] + 0.05 * noise[1];
+            protein.x   [base + i * spc_res + j][2] = x[2] + 0.05 * noise[2];
+            protein.n   [base + i * spc_res + j][0] = x[0];
+            protein.n   [base + i * spc_res + j][1] = x[1];
+            protein.n   [base + i * spc_res + j][2] = x[2];
+            protein.v   [base + i * spc_res + j] = 0;
+            protein.o   [base + i * spc_res + j] = 0;
+            protein.type[base + i * spc_res + j] = 5;
+            protein.tag [base + i * spc_res + j] = base + i * spc_res + j + 1;
+            if ( j > 0 ) protein.bonds.emplace_back( 3, protein.tag[base + i * spc_res + j - 1], protein.tag[base + i * spc_res + j] );
             switch ( j ) {
-            case  0: protein.bonds.emplace_back( 2, protein.tag[ vert2actin[bond[i][0]] ], protein.tag[base + i * 19 + j] ); break;
-            case  9: protein.bonds.emplace_back( 1, protein.tag[ bond2ib3[i]            ], protein.tag[base + i * 19 + j] ); break;
-            case 18: protein.bonds.emplace_back( 2, protein.tag[ vert2actin[bond[i][1]] ], protein.tag[base + i * 19 + j] ); break;
+            case         0: protein.bonds.emplace_back( 2, protein.tag[ vert2actin[bond[i][0]] ], protein.tag[base + i * spc_res + j] ); break;
+            case spc_res/2: protein.bonds.emplace_back( 1, protein.tag[ bond2ib3[i]            ], protein.tag[base + i * spc_res + j] ); break;
+            case spc_res-1: protein.bonds.emplace_back( 2, protein.tag[ vert2actin[bond[i][1]] ], protein.tag[base + i * spc_res + j] ); break;
             }
-        #else
-        auto beg = vert[bond[i][0]] - layer_dist * 1.5 * normal_vert[bond[i][0]];
-        auto end = vert[bond[i][1]] - layer_dist * 1.5 * normal_vert[bond[i][1]];
-        double span = norm( beg - end );
-        auto along = ( end - beg ) / span;
-        beg += along * 1.0;
-        end -= along * 1.0;
-        auto outward = cross( along, normal_bond[i] );
-        auto inc_para = 0.025 * ( end - beg );
-        auto inc_perp = outward * std::sqrt( ForceField::r0[3] * ForceField::r0[3] - normsq( inc_para ) );
-        for ( int j = 0; j < 39; j++ ) {
-            auto x = beg + inc_para * ( j + 1 ) + inc_perp * ( j % 2 );
-            //victor noise( param.rng.u11(), param.rng.u11(), param.rng.u11() );
-            protein.x   [base + i * 39 + j] = x;// + 0.1 * noise;
-            protein.v   [base + i * 39 + j] = 0;
-            protein.n   [base + i * 39 + j] = x / norm( x );
-            protein.o   [base + i * 39 + j] = 0;
-            protein.type[base + i * 39 + j] = 5;
-            protein.tag [base + i * 39 + j] = base + i * 39 + j + 1;
-            if ( j > 0 ) protein.bonds.emplace_back( 3, protein.tag[base + i * 39 + j - 1], protein.tag[base + i * 39 + j] );
-            switch ( j ) {
-            case  0: protein.bonds.emplace_back( 2, protein.tag[ vert2actin[bond[i][0]] ], protein.tag[base + i * 39 + j] ); break;
-            case 19: protein.bonds.emplace_back( 1, protein.tag[ bond2ib3[i]            ], protein.tag[base + i * 39 + j] ); break;
-            case 38: protein.bonds.emplace_back( 2, protein.tag[ vert2actin[bond[i][1]] ], protein.tag[base + i * 39 + j] ); break;
-            }
-        #endif
         }
     }
 
@@ -352,4 +326,4 @@ double init_rbc( C1 & lipid, C2 & protein, RTParameter const & param, const int 
 
 }
 
-#endif /* INIT_RBC_H_ */
+#endif

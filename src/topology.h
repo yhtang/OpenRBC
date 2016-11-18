@@ -11,8 +11,8 @@
 !@ See the License for the specific language governing permissions and
 !@ limitations under the License.
 ******************************************************************************/
-#ifndef TOPOLOGY_H_
-#define TOPOLOGY_H_
+#ifndef OPENRBC_TOPOLOGY_H_
+#define OPENRBC_TOPOLOGY_H_
 
 #include "container.h"
 #include "forcefield.h"

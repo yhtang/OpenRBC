@@ -11,8 +11,8 @@
 !@ See the License for the specific language governing permissions and
 !@ limitations under the License.
 ******************************************************************************/
-#ifndef TIMER_H_
-#define TIMER_H_
+#ifndef OPENRBC_TIMER_H_
+#define OPENRBC_TIMER_H_
 
 #include <iostream>
 #include <map>
@@ -70,4 +70,4 @@ protected:
 
 }
 
-#endif /* TIMER_H_ */
+#endif

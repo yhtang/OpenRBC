@@ -11,8 +11,8 @@
 !@ See the License for the specific language governing permissions and
 !@ limitations under the License.
 ******************************************************************************/
-#ifndef MATH_VECTOR_SIMD_H_
-#define MATH_VECTOR_SIMD_H_
+#ifndef OPENRBC_MATH_VECTOR_SIMD_H_
+#define OPENRBC_MATH_VECTOR_SIMD_H_
 
 #include "config_static.h"
 #include "math_vector_base.h"
@@ -143,7 +143,8 @@ public:
                              Math functions
     ---------------------------------------------------------------------------*/
     friend inline vector _rsqrt( vector const & u ) {
-        return _mm_rsqrt_ps( u.m128 );
+        auto e = _mm_rsqrt_ps( u.m128 );
+        return e * ( 1.5f - 0.5f * u.m128 * e * e );
     }
     friend inline vector _normsq( vector const & u ) {
         return _mm_dp_ps( u.m128, u.m128, 0xFF );
@@ -156,6 +157,9 @@ public:
         __m128 b_yzx = _mm_shuffle_ps( v.m128, v.m128, _MM_SHUFFLE( 3, 0, 2, 1 ) );
         __m128 c = _mm_sub_ps( _mm_mul_ps( u.m128, b_yzx ), _mm_mul_ps( a_yzx, v.m128 ) );
         return _mm_shuffle_ps( c, c, _MM_SHUFFLE( 3, 0, 2, 1 ) );
+    }
+    friend inline vector _min( vector const &u, vector const &v ) {
+        return _mm_min_ps( u.m128, v.m128 );
     }
     /*---------------------------------------------------------------------------
                 Math functions NOT TO BE USED IN FORCE KERNEL

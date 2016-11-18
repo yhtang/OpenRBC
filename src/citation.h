@@ -11,8 +11,8 @@
 !@ See the License for the specific language governing permissions and
 !@ limitations under the License.
 ******************************************************************************/
-#ifndef CITATION_H_
-#define CITATION_H_
+#ifndef OPENRBC_CITATION_H_
+#define OPENRBC_CITATION_H_
 
 namespace openrbc {
 
@@ -36,4 +36,4 @@ static struct Citation {
 
 }
 
-#endif /* CITATION_H_ */
+#endif

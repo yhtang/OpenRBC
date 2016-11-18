@@ -11,8 +11,8 @@
 !@ See the License for the specific language governing permissions and
 !@ limitations under the License.
 ******************************************************************************/
-#ifndef RNG_H_
-#define RNG_H_
+#ifndef OPENRBC_RNG_H_
+#define OPENRBC_RNG_H_
 
 #include <cstdlib>
 
@@ -140,4 +140,4 @@ private:
 
 }
 
-#endif /* RNG_H_ */
+#endif

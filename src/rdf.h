@@ -11,8 +11,8 @@
 !@ See the License for the specific language governing permissions and
 !@ limitations under the License.
 ******************************************************************************/
-#ifndef RDF_H_
-#define RDF_H_
+#ifndef OPENRBC_RDF_H_
+#define OPENRBC_RDF_H_
 
 #include <iostream>
 #include <fstream>
@@ -44,6 +44,40 @@ void rdf( const AlignedArray<vector<SCALAR, 3>, true> & x ) {
     fout.close();
 
     std::cout << "done." << std::endl;
+}
+
+template<typename SCALAR>
+void rdf_1peak_r( const ProteContainer & c ) {
+    const SCALAR dr = 0.5;
+    const SCALAR r_cut = 25;
+
+    AlignedArray<int> rdf;
+    rdf.assign( static_cast<int>(r_cut / dr) + 1, 0 );
+
+    for ( int i = 0; i < c.size(); ++i )
+        for ( int j = i + 1; j < c.size(); ++j )
+            if (c.type[i] == 4 && c.type[j] == 4) {
+                const SCALAR dx = norm( c.x[i] - c.x[j] );
+                if (dx < r_cut)
+                    rdf[static_cast<int>( dx / dr )] += 1;
+            }
+
+    SCALAR max_r = 0;
+    SCALAR max_d = 0;
+    std::ofstream fout( "rdf.txt" );
+    for ( int i = 1; i < rdf.size(); ++i ) {
+        const SCALAR r = dr * i;
+        const SCALAR d = rdf[i] / ( 4.0 * 3.14 * r * r * dr );
+        fout << r << ' ' << d << '\n';
+
+        if (d > max_d) {
+            max_r = r;
+            max_d = d;
+        }
+    }
+    fout.close();
+
+    std::cout << "actin: r(1st peak) = " << max_r << std::endl;
 }
 
 }

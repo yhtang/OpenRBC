@@ -11,8 +11,8 @@
 !@ See the License for the specific language governing permissions and
 !@ limitations under the License.
 ******************************************************************************/
-#ifndef INIT_RANDOM_H_
-#define INIT_RANDOM_H_
+#ifndef OPENRBC_INIT_RANDOM_H_
+#define OPENRBC_INIT_RANDOM_H_
 
 #include <cmath>
 #include "forcefield.h"
@@ -67,4 +67,4 @@ inline void init_random_sphere( LipidContainer & model, RTParameter const & para
 
 }
 
-#endif /* INIT_RANDOM_H_ */
+#endif

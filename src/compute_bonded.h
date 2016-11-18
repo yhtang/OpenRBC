@@ -11,8 +11,8 @@
 !@ See the License for the specific language governing permissions and
 !@ limitations under the License.
 ******************************************************************************/
-#ifndef COMPUTE_BONDED_H_
-#define COMPUTE_BONDED_H_
+#ifndef OPENRBC_COMPUTE_BONDED_H_
+#define OPENRBC_COMPUTE_BONDED_H_
 
 #include <cmath>
 #include "container.h"
@@ -29,31 +29,56 @@ using namespace config;
 template<class CONTAINER>
 void compute_bonded_simd( CONTAINER & model ) {
     Service<Timers>::call()["compute_bonded"].start();
+    rt_assert( Service<BalancerMap>::call()[ model.id() + "-bonds" ].set(), "The OpenMP load scheduler for bonds was not set up before compute_bonded" );
 
     #pragma omp parallel
     {
-        const int tid = omp_get_thread_num();
-        const int nthreads = omp_get_num_threads();
-        const int chunk_size = model.size() / nthreads;
-        const int pbegin = chunk_size * tid;
-        const int pend = ( tid == nthreads - 1 ) ? model.size() : ( pbegin + chunk_size );
+        const int beg = Service<BalancerMap>::call()[ model.id() ].beg();
+        const int end = Service<BalancerMap>::call()[ model.id() ].end();
+        for ( std::size_t i = beg; i < end; ++i ) model.f.shadow( i ) = constant::zero;
+    }
 
-        for ( std::size_t l = 0; l < model.bonds.size(); ++l ) {
+    #pragma omp parallel
+    {
+        const int bond_beg = Service<BalancerMap>::call()[ model.id() + "-bonds" ].beg();
+        const int bond_end = Service<BalancerMap>::call()[ model.id() + "-bonds" ].end();
+        const int particle_beg = Service<BalancerMap>::call()[ model.id() ].beg();
+        const int particle_end = Service<BalancerMap>::call()[ model.id() ].end();
+
+        for ( std::size_t l = bond_beg; l < bond_end; ++l ) {
             const int p1 = model.tag2idx[model.bonds[l].i];
             const int p2 = model.tag2idx[model.bonds[l].j];
-
-            const bool p1_in = p1 >= pbegin && p1 < pend;
-            const bool p2_in = p2 >= pbegin && p2 < pend;
-            if ( ( !p1_in ) && ( !p2_in ) ) continue;
-
             const auto type  = model.bonds[l].type;
             const vect r     = model.x[p2] - model.x[p1];
             const auto cur_r = vect( ForceField::K[type] ) * ( vect( 1.0f ) - vect( ForceField::r0[type] ) * _rsqrt( _normsq( r ) ) );
             const vect force = cur_r * r;
 
-            if ( p1_in ) model.f[p1] += force;
-            if ( p2_in ) model.f[p2] -= force;
+            if ( p1 >= particle_beg && p1 < particle_end ) model.f[p1] += force;
+            else {
+                #pragma omp atomic
+                model.f.shadow( p1 )[0] += force[0];
+                #pragma omp atomic
+                model.f.shadow( p1 )[1] += force[1];
+                #pragma omp atomic
+                model.f.shadow( p1 )[2] += force[2];
+            }
+            if ( p2 >= particle_beg && p2 < particle_end ) model.f[p2] -= force;
+            else {
+                #pragma omp atomic
+                model.f.shadow( p2 )[0] -= force[0];
+                #pragma omp atomic
+                model.f.shadow( p2 )[1] -= force[1];
+                #pragma omp atomic
+                model.f.shadow( p2 )[2] -= force[2];
+            }
         }
+    }
+
+    #pragma omp parallel
+    {
+        const int beg = Service<BalancerMap>::call()[ model.id() ].beg();
+        const int end = Service<BalancerMap>::call()[ model.id() ].end();
+        for ( std::size_t i = beg; i < end; ++i ) model.f[i] += model.f.shadow( i );
     }
 
     Service<Timers>::call()["compute_bonded"].stop();
@@ -64,32 +89,57 @@ void compute_bonded_simd( CONTAINER & model ) {
 template<class CONTAINER>
 void compute_bonded( CONTAINER & model ) {
     Service<Timers>::call()["compute_bonded"].start();
+    rt_assert( Service<BalancerMap>::call()[ model.id() + "-bonds" ].set(), "The OpenMP load scheduler for bonds was not set up before compute_bonded" );
 
     #pragma omp parallel
     {
-        const int tid = omp_get_thread_num();
-        const int nthreads = omp_get_num_threads();
-        const int chunk_size = model.size() / nthreads;
-        const int pbegin = chunk_size * tid;
-        const int pend = ( tid == nthreads - 1 ) ? model.size() : ( pbegin + chunk_size );
+        const int beg = Service<BalancerMap>::call()[ model.id() ].beg();
+        const int end = Service<BalancerMap>::call()[ model.id() ].end();
+        for ( std::size_t i = beg; i < end; ++i ) model.f.shadow( i ) = constant::zero;
+    }
 
-        for ( std::size_t l = 0; l < model.bonds.size(); ++l ) {
+    #pragma omp parallel
+    {
+        const int bond_beg = Service<BalancerMap>::call()[ model.id() + "-bonds" ].beg();
+        const int bond_end = Service<BalancerMap>::call()[ model.id() + "-bonds" ].end();
+        const int particle_beg = Service<BalancerMap>::call()[ model.id() ].beg();
+        const int particle_end = Service<BalancerMap>::call()[ model.id() ].end();
+
+        for ( std::size_t l = bond_beg; l < bond_end; ++l ) {
             const int p1 = model.tag2idx[model.bonds[l].i];
             const int p2 = model.tag2idx[model.bonds[l].j];
-
-            const bool p1_in = p1 >= pbegin && p1 < pend;
-            const bool p2_in = p2 >= pbegin && p2 < pend;
-            if ( ( !p1_in ) && ( !p2_in ) ) continue;
-
             const auto type = model.bonds[l].type;
             const auto dx = model.x[p2] - model.x[p1];
-            const auto rinv = _rsqrt( normsq( dx ) );
+            const auto rinv = norm_inv( dx );
             const auto cur_r = ForceField::K[type] * ( 1 - ForceField::r0[type] * rinv );
             const auto force = cur_r * dx;
 
-            if ( p1_in ) model.f[p1] += force;
-            if ( p2_in ) model.f[p2] -= force;
+            if ( p1 >= particle_beg && p1 < particle_end ) model.f[p1] += force;
+            else {
+                #pragma omp atomic
+                model.f.shadow( p1 )[0] += force[0];
+                #pragma omp atomic
+                model.f.shadow( p1 )[1] += force[1];
+                #pragma omp atomic
+                model.f.shadow( p1 )[2] += force[2];
+            }
+            if ( p2 >= particle_beg && p2 < particle_end ) model.f[p2] -= force;
+            else {
+                #pragma omp atomic
+                model.f.shadow( p2 )[0] -= force[0];
+                #pragma omp atomic
+                model.f.shadow( p2 )[1] -= force[1];
+                #pragma omp atomic
+                model.f.shadow( p2 )[2] -= force[2];
+            }
         }
+    }
+
+    #pragma omp parallel
+    {
+        const int beg = Service<BalancerMap>::call()[ model.id() ].beg();
+        const int end = Service<BalancerMap>::call()[ model.id() ].end();
+        for ( std::size_t i = beg; i < end; ++i ) model.f[i] += model.f.shadow( i );
     }
 
     Service<Timers>::call()["compute_bonded"].stop();
@@ -99,4 +149,4 @@ void compute_bonded( CONTAINER & model ) {
 
 }
 
-#endif /* COMPUTE_BONDED_H_ */
+#endif
