@@ -15,12 +15,15 @@
 #define OPENRBC_CONFIG_RT_H_
 
 #include <algorithm>
+#include <iostream>
 #include <iomanip>
 #include <omp.h>
 #include <cmath>
 #include <cstdlib>
+#include <vector>
 #include "config_static.h"
 #include "rng.h"
+#include "util_misc.h"
 
 namespace openrbc {
 
@@ -33,15 +36,15 @@ const static unsigned int force    = 16;
 };
 
 struct RTParameter {
-	using real = config::real;
+    using real = config::real;
 
     // system configuration
     double box[3][2];
     double bsize[3];
     int voronoi_cell_size = 14;
-    real rho = 1.10;
+    real rho = 1.05;
     real kBT = 0.22;
-    real eta = 1.0;
+    real eta = 0.01;
     real stray_tolerance = 2.5;
 
     // time marching
@@ -82,7 +85,7 @@ struct RTParameter {
         parse( dr_opt,            "",   "opt-max-move",        atof, argc, argv, "Maximum displacement of a particle during each optimization step" );
         parse( dn_opt,            "",   "opt-max-rotate",      atof, argc, argv, "Maximum rotation of a particle during each optimization step" );
         parse( freq_voronoi,      "V",  "voronoi-update-freq", atoi, argc, argv, "Frequency (#steps) of Voronoi cell update" );
-        parse( freq_sort_ctrd,    "",   "centroid-reorder-freq",atoi, argc, argv, "Frequency (#steps) of Voronoi cell centroid reorder" );
+        parse( freq_sort_ctrd,    "",   "centroid-reorder-freq", atoi, argc, argv, "Frequency (#steps) of Voronoi cell centroid reorder" );
         parse( freq_sort_bond,    "",   "bond-reorder-freq",   atoi, argc, argv, "Frequency (#steps) of bond locality maintenance" );
         parse( freq_display,      "D",  "display-frequency",   atoi, argc, argv, "Frequency (#steps) of screen info display" );
         parse( freq_dump,         "d",  "dump-frequency",      atoi, argc, argv, "Frequency (#steps) of trajectory file output" );

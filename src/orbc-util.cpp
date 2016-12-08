@@ -234,3 +234,67 @@ protected:
     }
 };
 static auto register_convert = commands.emplace( "convert", convert::action );
+
+/*-----------------------------------------------------------------------------
+Extract frames from existing ORBC trajectory and save to another file
+-----------------------------------------------------------------------------*/
+struct extract {
+    static int action( int argc, char ** argv ) {
+        if ( argc < 5 ) {
+            printf( "Usage: %s %s input_filename output_filename frame_ids...\n", argv[0], argv[1] );
+            return -1;
+        }
+        std::string ifile = argv[2], ofile = argv[3];
+        std::vector<int> frames;
+        for ( int i = 4; i < argc; ++i ) frames.push_back( atoi( argv[i] ) );
+
+        using namespace config;
+
+        std::ifstream fi( ifile );
+        std::ofstream fo( ofile );
+
+        RTParameter param( 0, NULL );
+        ProteContainer cell( "cell" );
+
+        while ( !fi.eof() ) {
+            if ( read_frame( fi, cell, param ) ) {
+                if ( std::find( frames.begin(), frames.end(), param.nstep ) != frames.end() ) {
+                    printf( "Dump frame %d\n", param.nstep );
+                    Serializer stream( fo );
+                    stream.write_title( "FRAMEBEG" );
+                    stream << param.nstep ;
+                    stream.write_title( "NATOM" );
+                    stream << cell.size();
+                    stream.write_title( "IDENTITY" );
+                    for ( std::size_t i = 0 ; i < cell.size() ; ++i ) stream << cell.tag[i] << cell.type[i];
+                    if ( param.dump_field & DumpField::position ) {
+                        stream.write_title( "POSITION" );
+                        for ( std::size_t i = 0 ; i < cell.size() ; ++i ) stream << cell.x[i][0] << cell.x[i][1] << cell.x[i][2];
+                    }
+                    if ( param.dump_field & DumpField::velocity ) {
+                        stream.write_title( "VELOCITY" );
+                        for ( std::size_t i = 0 ; i < cell.size() ; ++i ) stream << cell.v[i][0] << cell.v[i][1] << cell.v[i][2];
+                    }
+                    if ( param.dump_field & DumpField::rotation ) {
+                        stream.write_title( "ROTATION" );
+                        for ( std::size_t i = 0 ; i < cell.size() ; ++i ) stream << cell.n[i][0] << cell.n[i][1] << cell.n[i][2];
+                    }
+                    if ( param.dump_field & DumpField::force ) {
+                        stream.write_title( "FORCE" );
+                        for ( std::size_t i = 0 ; i < cell.size() ; ++i ) stream << cell.f[i][0] << cell.f[i][1] << cell.f[i][2];
+                    }
+                    stream.write_title( "FRAMEEND" );
+                } else printf( "Ignore frame %d\n", param.nstep );
+            }
+        }
+
+        return 0;
+    }
+protected:
+    static std::string get_suffix( std::string name ) {
+        std::string suffix;
+        for ( int i = name.size() - 1; i >= 0 && name[i] != '.'; --i ) suffix.insert( 0, 1, name[i] );
+        return suffix;
+    }
+};
+static auto register_extract = commands.emplace( "extract", extract::action );

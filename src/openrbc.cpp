@@ -11,6 +11,7 @@
 !@ See the License for the specific language governing permissions and
 !@ limitations under the License.
 ******************************************************************************/
+#include <iostream>
 #include "compute_bonded.h"
 #include "compute_pairwise.h"
 #include "compute_pairwise_simd.h"
@@ -32,7 +33,9 @@
 #include "topology.h"
 #include "trajectory.h"
 #include "voronoi.h"
-#include <iostream>
+#include "constrain_volume.h"
+#include "zero_bulk_velocity.h"
+#include "assign_temperature.h"
 
 int main( int argc, char ** argv ) {
     using namespace openrbc;
@@ -152,6 +155,7 @@ int main( int argc, char ** argv ) {
     cell_protein.update( protein, voronoi, param );
 
     integrate( clear_force(), lipid, protein );
+    integrate( assign_temperature(param), lipid, protein );
 
     #ifdef EXPLICIT_SIMD
     compute_pairwise_simd( voronoi, lipid, protein, cell_lipid, cell_protein );
@@ -219,6 +223,9 @@ int main( int argc, char ** argv ) {
         compute_bonded( protein );
         #endif
 
+        //integrate( zero_bulk_velocity( param ), lipid );
+        //constrain_volume( lipid, protein, voronoi, cell_lipid, cell_protein, param, 3.15, 0.05 );
+
         // time integration again
         #ifdef LANGEVIN
         integrate( verlet_langevin( param ), lipid, protein );
@@ -250,8 +257,6 @@ int main( int argc, char ** argv ) {
     std::stringstream msg;
     msg << param.nstep << " steps * " << lipid.size() + protein.size() << " particles on " << omp_get_max_threads() << " threads.";
     display_timing( std::cout, Service<Timers>::call()["+main-loop"].stop(), msg.str().c_str() );
-
-    //rdf(voronoi.centroids);
 
     return 0;
 }

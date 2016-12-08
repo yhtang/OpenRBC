@@ -132,6 +132,9 @@ public:
     friend inline vector operator - ( vector const & u, vector const & v ) {
         return _mm_sub_ps( u.m128, v.m128 );
     }
+    friend inline vector operator - ( vector const & u ) {
+        return -u.m128;
+    }
     friend inline vector operator * ( vector const & u, vector const & v ) {
         return _mm_mul_ps( u.m128, v.m128 );
     }
@@ -281,6 +284,9 @@ public:
     }
     friend inline vector operator - ( vector const & u, vector const & v ) {
         return vec_sub( u.m128, v.m128 );
+    }
+    friend inline vector operator - ( vector const & u ) {
+        return -u.m128;
     }
     friend inline vector operator * ( vector const & u, vector const & v ) {
         return vec_madd( u.m128, v.m128, zero().m128 );

@@ -320,7 +320,7 @@ struct verlet_langevin_final {
 
         real gamma[ ForceField::n_type ], sigma[ ForceField::n_type ];
         for ( int i = 0; i < ForceField::n_type; ++i ) {
-            gamma[i] = 1.0 / 6.0 / M_PI / parameter.eta / ForceField::radius[ i ];
+            gamma[i] = 6.0 * M_PI * parameter.eta * ForceField::radius[ i ];
             sigma[i] = std::sqrt( 2 * parameter.kBT * gamma[i] ) * std::sqrt( 3.0 / parameter.dt );
         }
 
@@ -357,7 +357,7 @@ struct verlet_langevin {
 
         real gamma[ ForceField::n_type ], sigma[ ForceField::n_type ];
         for ( int i = 0; i < ForceField::n_type; ++i ) {
-            gamma[i] = 1.0 / 6.0 / M_PI / parameter.eta / ForceField::radius[ i ];
+            gamma[i] = 6.0 * M_PI * parameter.eta * ForceField::radius[ i ];
             sigma[i] = std::sqrt( 2 * parameter.kBT * gamma[i] ) * std::sqrt( 3.0 / parameter.dt );
         }
 

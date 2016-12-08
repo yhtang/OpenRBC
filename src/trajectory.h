@@ -124,15 +124,20 @@ bool read_frame( std::istream & file, CONTAINER & model, RTParameter & param ) {
         } else if ( section ==  "IDENTITY" ) {
             for ( std::size_t i = 0 ; i < model.size() ; ++i ) stream >> model.tag[i] >> model.type[i];
         } else if ( section ==  "POSITION" ) {
+        	param.dump_field |= DumpField::position;
             for ( std::size_t i = 0 ; i < model.size() ; ++i ) stream >> model.x[i][0] >> model.x[i][1] >> model.x[i][2];
         } else if ( section ==  "VELOCITY" ) {
+        	param.dump_field |= DumpField::velocity;
             for ( std::size_t i = 0 ; i < model.size() ; ++i ) stream >> model.v[i][0] >> model.v[i][1] >> model.v[i][2];
         } else if ( section ==  "ROTATION" ) {
+        	param.dump_field |= DumpField::rotation;
             for ( std::size_t i = 0 ; i < model.size() ; ++i ) stream >> model.n[i][0] >> model.n[i][1] >> model.n[i][2];
         } else if ( section ==  "VORONOI" ) {
+        	param.dump_field |= DumpField::voronoi;
             std::remove_reference<decltype( VCellList::affiliation[0] )>::type dummy;
             for ( std::size_t i = 0 ; i < model.size() ; ++i ) stream >> dummy;
         } else if ( section ==  "FORCE" ) {
+        	param.dump_field |= DumpField::force;
             for ( std::size_t i = 0 ; i < model.size() ; ++i ) stream >> model.f[i][0] >> model.f[i][1] >> model.f[i][2];
         } else {
             printf( "Unknown section %s in file\n", section );
