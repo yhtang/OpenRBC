@@ -1,6 +1,6 @@
 # Quick Start Guide for: OpenRBC - A Fast Simulator of Red Blood Cells at Protein-Resolution
 
-## Compile the code
+## Compilation
 x86 processor, recent Linux distribution, `g++` newer than 5.3.0:
 ```
 cd <working_copy>/src
@@ -58,7 +58,7 @@ OMP_NUM_THREADS=... ./openrbc -E 100 -t ...
 
 ## Visualization
 
-The result data file can be visualized with [VMD](http://www.ks.uiuc.edu/Research/vmd/) using the following TCL command.
+The initial structure file can be visualized with [VMD](http://www.ks.uiuc.edu/Research/vmd/) using the following TCL command.
 ```
 topo readlammpsdata cell.data bond
 ```
@@ -69,11 +69,11 @@ make orbc-util
 cd <working_copy>/<case_directory>
 ../orbc-util convert cell.orbc cell.lammpstrj
 ```
-which can then be loaded into VMD by
+which can then be appended to the initial structure in VMD by
 ```
 mol addfile cell.lammpstrj autobonds 0
 ```
-The LAMMPS trajectory file, however, is text-based and works poorly for whole-cell simulations containing millions of particles. In this case a binary format can be generated and loaded into vmd:
+The LAMMPS trajectory file, however, is text-based and works poorly for whole-cell simulations containing millions of particles. In this case a binary format can be generated and appended in vmd:
 ```bash
 ../orbc-util convert cell.orbc cell.%06d.namdbin
 ```
