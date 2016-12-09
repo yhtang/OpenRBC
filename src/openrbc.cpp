@@ -26,6 +26,7 @@
 #include "init_rbc.h"
 #include "citation.h"
 #include "integrate_nh.h"
+#include "integrate_langevin.h"
 #include "forcefield.h"
 #include "rdf.h"
 #include "rng.h"
@@ -49,18 +50,16 @@ int main( int argc, char ** argv ) {
     std::cout << "Initializing system ..." << std::flush;
     LipidContainer lipid( "lipid" );
     ProteContainer protein( "protein" );
-    #if 0 // lipid-only sphere
-    init_random_sphere( lipid, param, 100 );
-    //save_topology( lipid, param, std::ofstream( param.file_topo ) );
-    #else // full-package RBC
-    #if 1
-    init_rbc( lipid, protein, param, 500 );
-    save_topology( std::ofstream( param.file_topo ), param, protein, lipid );
-    #else
-    init_debug( protein, lipid, param, 50 );
-    save_topology( std::ofstream( "cell.data" ), param, protein, lipid );
-    #endif
-    #endif
+    if ( param.init == "lipid" ) {
+    	init_random_sphere( lipid, param, 100 );
+    	save_topology( std::ofstream( param.file_topo ), param, protein, lipid );
+    } else if ( param.init == "vesicle" ) {
+    	init_rbc( lipid, protein, param, 500 );
+    	save_topology( std::ofstream( param.file_topo ), param, protein, lipid );
+    } else if ( param.init == "trimesh" ) {
+    	init_rbc( lipid, protein, param, 0 );
+    	save_topology( std::ofstream( param.file_topo ), param, protein, lipid );
+    }
     std::cout << "Done." << std::endl;
 
     std::cout << "Initializing Voronoi cells " << std::flush;

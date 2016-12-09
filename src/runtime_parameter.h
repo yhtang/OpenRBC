@@ -38,6 +38,9 @@ const static unsigned int force    = 16;
 struct RTParameter {
     using real = config::real;
 
+    std::string init = "vesicle"; // initialization mode
+    std::string mesh;             // mesh file prefix
+
     // system configuration
     double box[3][2];
     double bsize[3];
@@ -48,9 +51,9 @@ struct RTParameter {
     real stray_tolerance = 2.5;
 
     // time marching
-    double t_total      = 10; // target total simulation time
+    double t_total      = 10;   // target total simulation time
     double dt           = 1E-2; // time step size
-    int opt_nstep       = 1000;
+    int opt_nstep       = 1000; // number of optimization time steps
     double dr_opt       = 5E-2; // maximal displacement in enery minimization
     double dn_opt       = 5E-2; // maximal angular movement in enery minimization
     int freq_voronoi    = 2;
@@ -58,6 +61,7 @@ struct RTParameter {
     int freq_sort_bond  = 120;
     int freq_cleanup    = 60;
     int nstep           = 0;  // current time step
+    int rseed           = 0xBAD5EED;
 
     // I/O
     int freq_display    = 100;
@@ -77,6 +81,8 @@ struct RTParameter {
 
     RTParameter( int argc, char ** argv ) {
         auto atos = []( const char f[] ) { return std::string( f ); };
+        parse( init,              "i",  "init",                atos, argc, argv, "Model initialization mode, must be 'lipid' or 'vesicle' or 'trimesh'" );
+        parse( mesh,              "m",  "mesh",                atos, argc, argv, "Prefix for the 3 mesh files, e.g. [mesh].bond.txt, [mesh].face.txt, [mesh].vert.txt" );
         parse( t_total,           "t",  "total-time",          atof, argc, argv, "Total time in simulation units" );
         parse( dt,                "k",  "dt",                  atof, argc, argv, "Simulation time step size" );
         parse( eta,               "e",  "eta",                 atof, argc, argv, "Solvent viscosity for Langevin integrator" );
@@ -98,6 +104,8 @@ struct RTParameter {
         parse( voronoi_cell_size, "",   "voronoi-cell-size",   atoi, argc, argv, "Average size (#lipids) of Voronoi cells" );
         parse( file_topo,         "o",  "topology-file",       atos, argc, argv, "Filename for saving topology" );
         parse( file_traj,         "x",  "trajectory-file",     atos, argc, argv, "Filename for saving trajectory" );
+        parse( rseed,             "r" , "random-seed",         atoi, argc, argv, "Seed for random number generation" );
+        rng.init( rseed );
         prng.resize( omp_get_max_threads() );
         for ( auto & r : prng ) r.init( rng.uint() );
         for ( int d = 0; d < 3; ++d ) {
@@ -105,6 +113,8 @@ struct RTParameter {
             box[d][1] =  1000;
             bsize[d] = box[d][1] - box[d][0];
         }
+        rt_assert( init == "lipid" || init == "vesicle" || init == "trimesh", "Initialization mode must be 'lipid', 'vesicle', or 'trimesh'" );
+        if ( init == "trimesh" ) rt_assert( mesh.size(), "Initialization mode 'trimesh' specified, but mesh files are not given" );
         rt_assert( freq_sort_ctrd % freq_voronoi == 0, "Voronoi centroid reorder frequency must be a multiple of voronoi update frequency" );
         rt_assert( freq_sort_bond % freq_voronoi == 0, "bond reorder frequency must be a multiple of voronoi update frequency" );
         rt_assert( freq_cleanup   % freq_voronoi == 0, "stray lipid cleanup frequency must be a multiple of voronoi update frequency" );

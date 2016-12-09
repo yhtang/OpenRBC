@@ -58,6 +58,13 @@ float _rsqrt( float n ) {
         }
 #define rt_assert(predicate,message) rt_assert_impl(predicate,message,__FILE__,__LINE__)
 
+template<typename ...T> std::string format( const char fmt[], T && ... args ) {
+	int l = strlen( fmt ) * 2;
+	std::vector<char> s( l );
+	snprintf( s.data(), l, fmt, args... );
+	return s.data();
+}
+
 }
 
 #endif

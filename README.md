@@ -53,9 +53,10 @@ In most cases placing consecutive threads on adjacent core/hardware threads woul
 ```
 cd <working_copy>/example-large
 ln -s ../src/openrbc
-OMP_NUM_THREADS=... ./openrbc -E 100 -t ...
+OMP_NUM_THREADS=... ./openrbc -i trimesh -m rbc -E 100 -t ...
 ```
-
+where
+`-i` instruct the program to initialize using mesh files specified by the `-m` argument.
 ## Visualization
 
 The initial structure file can be visualized with [VMD](http://www.ks.uiuc.edu/Research/vmd/) using the following TCL command.

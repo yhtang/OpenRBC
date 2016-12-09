@@ -27,19 +27,23 @@ namespace openrbc {
 
 // Reference: Li & Lykotrafitis, Biophysical Journal, 2014
 template<class C1, class C2>
-double init_rbc( C1 & lipid, C2 & protein, RTParameter const & param, const int vertex, const int step = 200, const int seed = 0 ) {
+double init_rbc( C1 & lipid, C2 & protein, RTParameter & param, const int vertex, const int step = 200, const int seed = 0 ) {
     using namespace config;
     using victor = vector<real, 3>;
 
     Service<Timers>::call()["init_rbc"].start();
 
     // Generate triangular mesh with python script
-    char cmd[512];
-    sprintf( cmd, "python ../util/rbc_mesh.py -s %d -v %d -a rbc -e %u", step, vertex, param.rng.uint() );
-    int error = system( cmd );
+    if ( param.init == "vesicle" ) {
+		char cmd[512];
+		param.mesh = format( "vesicle-%08x", param.rng.uint() );
+		sprintf( cmd, "python ../util/rbc_mesh.py -s %d -v %d -a %s -e %u", step, vertex, param.mesh.c_str(), param.rng.uint() );
+		int error = system( cmd );
+    }
 
     // Load the generated mesh
-    std::ifstream fvert( "rbc.vert.txt" );
+    printf("Loading mesh data from %s.{vert|bond|face}.txt\n", param.mesh.c_str() );
+    std::ifstream fvert( param.mesh + ".vert.txt" );
     std::vector<victor> vert;
     while ( !fvert.eof() ) {
         double x, y, z;
@@ -47,7 +51,7 @@ double init_rbc( C1 & lipid, C2 & protein, RTParameter const & param, const int 
         if ( !fvert.eof() ) vert.emplace_back( x, y, z );
     }
 
-    std::ifstream fbond( "rbc.bond.txt" );
+    std::ifstream fbond( param.mesh + ".bond.txt" );
     std::vector<vector<int, 2> > bond;
     while ( !fbond.eof() ) {
         int i, j;
@@ -55,7 +59,7 @@ double init_rbc( C1 & lipid, C2 & protein, RTParameter const & param, const int 
         if ( !fbond.eof() ) bond.emplace_back( i, j );
     }
 
-    std::ifstream fface( "rbc.face.txt" );
+    std::ifstream fface( param.mesh + ".face.txt" );
     std::vector<vector<int, 3> > face;
     while ( !fface.eof() ) {
         int i, j, k;
