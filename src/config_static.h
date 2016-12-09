@@ -29,6 +29,7 @@ using T4 = float; // k-d tree
 
 #define FUSED_INTEGRATOR
 #define FUSED_PAIRWISE
+#define LANGEVIN
 
 using real = float;
 
