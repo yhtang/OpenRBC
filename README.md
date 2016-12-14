@@ -57,6 +57,7 @@ OMP_NUM_THREADS=... ./openrbc -i trimesh -m rbc -E 100 -t ...
 ```
 where
 `-i` instruct the program to initialize using mesh files specified by the `-m` argument.
+
 ## Visualization
 
 The initial structure file can be visualized with [VMD](http://www.ks.uiuc.edu/Research/vmd/) using the following TCL command.
