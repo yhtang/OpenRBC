@@ -46,7 +46,7 @@ OpenMP thread binding is vital to achieve optimal performance acorss multiple NU
 | G++/GOMP             | GOMP_CPU_AFFINITY    |
 | Intel/IOMP           | KMP_AFFINITY         |
 
-In most cases placing consecutive threads on adjacent core/hardware threads would be optimal, however it is highly recommended that you test and tune thread binding before performing production runs. To figure out your socket/core topology refer to the `lstopo`, `hwloc-ls`, 'hwloc-info' commnands from the `hwloc` package.
+In most cases placing consecutive threads on adjacent core/hardware threads would be optimal, however it is highly recommended that you test and tune thread binding before performing production runs. To figure out your socket/core topology refer to the `lstopo`, `hwloc-ls`, `hwloc-info` commnands from the `hwloc` package.
 
 ## Full-size example
 
