@@ -29,6 +29,7 @@
 #include "integrate_langevin.h"
 #include "forcefield.h"
 #include "rdf.h"
+#include "remove_bonds.h"
 #include "rng.h"
 #include "timer.h"
 #include "topology.h"
@@ -55,6 +56,7 @@ int main( int argc, char ** argv ) {
     	save_topology( std::ofstream( param.file_topo ), param, protein, lipid );
     } else if ( param.init == "vesicle" ) {
     	init_rbc( lipid, protein, param, 500 );
+        //remove_bonds(protein, UnaryPredicate());
     	save_topology( std::ofstream( param.file_topo ), param, protein, lipid );
     } else if ( param.init == "trimesh" ) {
     	init_rbc( lipid, protein, param, 0 );

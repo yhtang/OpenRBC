@@ -92,7 +92,7 @@ double init_rbc( C1 & lipid, C2 & protein, RTParameter & param, const int vertex
     for ( std::size_t i = 0; i < face.size(); i++ ) {
         normal_face[i] = cross( vert[face[i][0]] - vert[face[i][1]], vert[face[i][2]] - vert[face[i][1]] );
         normal_face[i] *= norm_inv( normal_face[i] );
-        if ( dot( normal_face[i], 0.333 * ( vert[face[i][0]] + vert[face[i][1]] + vert[face[i][2]] ) ) < 0 ) normal_face[i] *= -1.0;
+        //if ( dot( normal_face[i], 0.333 * ( vert[face[i][0]] + vert[face[i][1]] + vert[face[i][2]] ) ) < 0 ) normal_face[i] *= -1.0; // this 'smart' flipping caused more trouble than good
         for ( int d = 0; d < 3; d++ ) vert2face[ face[i][d] ].insert( i );
     }
     // Find neighboring faces for each bond
