@@ -2,6 +2,7 @@ VECINFO ?= 0
 AALLOC  ?= 0
 CXX     ?= g++
 ARCH    ?= x86
+SIMD    ?= 0
 
 ifeq ($(CXX),g++)
 	ifeq ($(ARCH),x86)
@@ -21,6 +22,21 @@ endif
 
 ifeq ($(DEBUG),1) 
 CFLAGS	+= -O0
+endif
+
+ifeq ($(SIMD),1)
+	ifeq ($(ARCH),x86)
+		CFLAGS += -D_ESIMD
+	endif
+	ifeq ($(ARCH),power8)
+		CFLAGS += -D_ISIMD
+	endif
+endif
+ifeq ($(SIMD),2)
+	CFLAGS += -D_ESIMD
+endif
+ifeq ($(SIMD),3)
+	CFLAGS += -D_ISIMD
 endif
 
 ifeq ($(VECINFO),1)
