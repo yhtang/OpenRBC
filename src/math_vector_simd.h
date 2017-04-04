@@ -14,14 +14,14 @@
 #ifndef OPENRBC_MATH_VECTOR_SIMD_H_
 #define OPENRBC_MATH_VECTOR_SIMD_H_
 
-#include "config_static.h"
-#include "math_vector_base.h"
 #include <array>
 #include <cmath>
 #include <cassert>
 #include <type_traits>
 #include <algorithm>
 #include <cstdint>
+#include "config_simd.h"
+#include "math_vector_base.h"
 
 namespace openrbc {
 

@@ -35,14 +35,14 @@ double init_rbc( C1 & lipid, C2 & protein, RTParameter & param, const int vertex
 
     // Generate triangular mesh with python script
     if ( param.init == "vesicle" ) {
-		char cmd[512];
-		param.mesh = format( "vesicle-%08x", param.rng.uint() );
-		sprintf( cmd, "python ../util/rbc_mesh.py -s %d -v %d -a %s -e %u", step, vertex, param.mesh.c_str(), param.rng.uint() );
-		int error = system( cmd );
+        char cmd[512];
+        param.mesh = format( "vesicle-%08x", param.rng.uint() );
+        sprintf( cmd, "python ../util/rbc_mesh.py -s %d -v %d -a %s -e %u", step, vertex, param.mesh.c_str(), param.rng.uint() );
+        int error = system( cmd );
     }
 
     // Load the generated mesh
-    printf("Loading mesh data from %s.{vert|bond|face}.txt\n", param.mesh.c_str() );
+    printf( "Loading mesh data from %s.{vert|bond|face}.txt\n", param.mesh.c_str() );
     std::ifstream fvert( param.mesh + ".vert.txt" );
     std::vector<victor> vert;
     while ( !fvert.eof() ) {
@@ -84,8 +84,8 @@ double init_rbc( C1 & lipid, C2 & protein, RTParameter & param, const int vertex
 
     // Compute vertex- and edge- averaged normal
     std::vector<victor > normal_face( face.size(), 0 ),
-        normal_vert( vert.size(), 0 ),
-        normal_bond( bond.size(), 0 );
+                         normal_vert( vert.size(), 0 ),
+                         normal_bond( bond.size(), 0 );
     std::vector<std::set<int> >    vert2face( vert.size() ),
         bond2face( bond.size() );
     // Calculate face normal
@@ -262,6 +262,7 @@ double init_rbc( C1 & lipid, C2 & protein, RTParameter & param, const int vertex
         for ( int j = 0; j < n; j++ ) {
             victor r;
             bool clutter;
+            int retry = 0;
             do {
                 double r1 = param.rng.u01();
                 double r2 = param.rng.u01();
@@ -281,6 +282,13 @@ double init_rbc( C1 & lipid, C2 & protein, RTParameter & param, const int vertex
                     if ( normsq( pts[k] - r ) < min_dist * min_dist ) {
                         clutter = true;
                         break;
+                    }
+                }
+                if ( ++retry > n * 10 ) {
+                    static bool warned = false;
+                    if ( !warned ) {
+                        printf( "Excessive clutter check failure\n" );
+                        warned = true;
                     }
                 }
             } while ( clutter );

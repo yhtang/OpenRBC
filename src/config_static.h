@@ -33,31 +33,14 @@ using T4 = float; // k-d tree
 
 using real = float;
 
-#if   0 || defined(_ESIMD)   // EXPLICIT SIMD, 4-COMPONENT VECTOR
-	#define EXPLICIT_SIMD
+#if   defined( EXPLICIT_SIMD )
 	using vect = vector<real, 4>;
-	#if defined(_M_X64) || defined(_M_AMD64) || defined(__amd64__) || defined(__amd64) || defined(__x86_64__) || defined(__x86_64)
-		#pragma message( "Explicit SIMD vectorization enabled for x86")
-	#else
-		#pragma message( "Explicit SIMD vectorization enabled, to get maximum performance on Power8 processors try 'make SIMD=3'")
-	#endif
-#elif 0 || defined(_ISIMD)   // IMPLICIT SIMD, 3-COMPONENT VECTOR
-	#undef  EXPLICIT_SIMD
-	#define IMPLICIT_SIMD
+#elif defined( IMPLICIT_SIMD )
 	using vect = vector<real, 3>;
-	#if defined(__powerpc64__) || defined(__ppc64__) || defined(_M_PPC) || defined(_ARCH_PPC64) || defined(__ppc)
-		#pragma message( "Implicit SIMD vectorization enabled for Power8")
-	#else
-		#pragma message( "Implicit SIMD vectorization enabled, to get maximum performance on x86 processors try 'make SIMD=2'")
-	#endif
-#elif 0 || defined(_VEC4)    // SIMD OFF, 4-COMPONENT VECTOR
-	#undef EXPLICIT_SIMD
+#elif defined(_VEC4)
 	using vect = vector<real, 4>;
-	#pragma message( "SIMD vectorization is not enabled, to get maximum performance try 'make SIMD=1'")
-#else                        // SIMD OFF, 3-COMPONENT VECTOR
-	#undef EXPLICIT_SIMD
+#else
 	using vect = vector<real, 3>;
-	#pragma message( "SIMD vectorization is not enabled, to get maximum performance try 'make SIMD=1'")
 #endif
 
 const static std::size_t cacheline = 64;

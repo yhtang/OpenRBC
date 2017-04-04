@@ -11,8 +11,8 @@
 !@ See the License for the specific language governing permissions and
 !@ limitations under the License.
 ******************************************************************************/
-#ifndef REMOVE_BONDS_H_
-#define REMOVE_BONDS_H_
+#ifndef OPENRBC_REMOVE_BONDS_H_
+#define OPENRBC_REMOVE_BONDS_H_
 
 #include <algorithm>
 #include <iostream>

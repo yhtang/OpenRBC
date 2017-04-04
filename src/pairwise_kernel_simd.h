@@ -15,7 +15,6 @@
 #define OPENRBC_FORCE_KERNEL_SIMD_H_
 
 #include "math_vector.h"
-#include "math_vector.h"
 #include "pairwise_kernel.h"
 
 namespace openrbc {

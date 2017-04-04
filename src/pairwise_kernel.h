@@ -15,7 +15,6 @@
 #define OPENRBC_PAIRWISE_KERNEL_H_
 
 #include "math_vector.h"
-#include "math_vector.h"
 
 namespace openrbc {
 

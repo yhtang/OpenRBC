@@ -12,12 +12,13 @@
 !@ limitations under the License.
 ******************************************************************************/
 #include <iostream>
+#include "config_static.h"
 #include "compute_bonded.h"
 #include "compute_pairwise.h"
 #include "compute_pairwise_simd.h"
 #include "compute_pairwise_fused.h"
+#include "compute_pairwise_lp.h"
 #include "compute_temperature.h"
-#include "config_static.h"
 #include "cleanup.h"
 #include "runtime_parameter.h"
 #include "container.h"
@@ -56,7 +57,7 @@ int main( int argc, char ** argv ) {
     	save_topology( std::ofstream( param.file_topo ), param, protein, lipid );
     } else if ( param.init == "vesicle" ) {
     	init_rbc( lipid, protein, param, 500 );
-        //remove_bonds(protein, UnaryPredicate());
+        remove_bonds(protein, UnaryPredicate());
     	save_topology( std::ofstream( param.file_topo ), param, protein, lipid );
     } else if ( param.init == "trimesh" ) {
     	init_rbc( lipid, protein, param, 0 );
