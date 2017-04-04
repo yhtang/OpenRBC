@@ -12,7 +12,7 @@ opts       = dict( opts )
 n_step     = int(opts['-s']) if '-s' in opts else 100
 n_vert     = int(opts['-v']) if '-v' in opts else 500
 seed       = int(opts['-e']) if '-e' in opts else 0
-arx        = opts['-a'] if '-a' in opts else 'v%ds%d' % ( n_vert, n_step ) 
+arx        = opts['-a'] if '-a' in opts else 'v%ds%d' % ( n_vert, n_step )
 k          = 0.004 * n_vert ** (1/3.0);
 eps        = 1e-7
 cut        = 4 / n_vert ** 0.5
@@ -36,13 +36,13 @@ for i in range( 0, n_vert - 1 ):
         if d[0] >= cut * 0.65:
             break
     vert = append( vert, nv, axis = 0 )
-sys.stdout.write('Done\n') 
+sys.stdout.write('Done\n')
 
 # Reorder to improve locality
 nbin = floor( 2 / cut ) / 2
 binv = nbin / 2
 bid  = sum( floor( ( vert + 1 ) * binv ) * array( [ 1, nbin, nbin * nbin ] )[newaxis,:], axis = 1 )
-vert = vert[ argsort( bid ), : ]  
+vert = vert[ argsort( bid ), : ]
 
 print '%d vertices initialization => %.2f seconds' % ( n_vert, time() - t0 )
 
@@ -76,11 +76,17 @@ for step in range(n_step):
 
 # Post-processing: project to unit sphere
 vert /= linalg.norm( vert, axis = 1 )[ :, newaxis ]
+# Post-processing: making sure all faces are facing outward
+for i in range( face.shape[0] ):
+    com = mean( vert[ face[i] ], axis = 0 )
+    normal = cross( vert[ face[i][0] ] - vert[ face[i][1] ], vert[ face[i][2] ] - vert[ face[i][1] ] )
+    if dot( com, normal ) < 0:
+        face[i] = face[i][ [0,2,1] ]
 
 sys.stdout.write('Done\n')
 print '%d vertices, %d iterations => %.2f seconds' % ( n_vert, n_step, time() - t0 )
 
+print 'Saving mesh into files %s.{vert|bond|face}.txt' % arx
 savetxt( '%s.vert.txt' % arx, vert, fmt='% 2.8e', delimiter=' ' )
 savetxt( '%s.face.txt' % arx, face, fmt='%-7d', delimiter=' ' )
 savetxt( '%s.bond.txt' % arx, bond, fmt='%-7d', delimiter=' ' )
-
